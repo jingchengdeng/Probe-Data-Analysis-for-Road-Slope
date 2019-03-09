@@ -3,12 +3,6 @@ import operator
 from math import sin, cos, sqrt, atan2, radians
 
 
-def read(file):
-    f = open(file)
-    data = csv.reader(f)
-    return data
-
-
 def calDistance(lat1, lon1, lat2, lon2):
     R = 6373.0
     lat1 = radians(lat1)
@@ -87,8 +81,7 @@ if __name__ == "__main__":
             candidate.append((routeData[k][0], distance, routeData[k][1], routeData[k][2]))
 
         matchMap = min(candidate, key=operator.itemgetter(1))
-        print(matchMap[2])
-        print(matchMap[3])
+
         with open('Partition6467MatchedPoints.csv', 'a', newline='') as csvfile:
             output = csv.writer(csvfile)
             sampleID = probeData[i][0]
@@ -98,7 +91,7 @@ if __name__ == "__main__":
             lontitude = probeData[i][4]
             altitude = probeData[i][5]
             speed = probeData[i][6]
-            heading = probeData[i][7]
+            heading = probeData[i][7].rstrip()
             linkPVID = matchMap[0]
             if getDirection((probeData[i][3],probeData[i][4]),(probeData[i-1][3],probeData[i-1][4]),
                             (matchMap[2],matchMap[3])):
@@ -110,5 +103,6 @@ if __name__ == "__main__":
                                       float(matchMap[2]),
                                       float(matchMap[3]))
             distFromLink = matchMap[1]
-            output.writerow((sampleID, dateTime, sourceCode, latitude, lontitude, altitude, speed, heading, linkPVID,
-                             direction, distFromRef, distFromLink))
+            output.writerow((sampleID, dateTime, sourceCode, latitude, lontitude, altitude, speed, heading, linkPVID, direction, distFromRef, distFromLink))
+    print("Match Point Finished!")
+
