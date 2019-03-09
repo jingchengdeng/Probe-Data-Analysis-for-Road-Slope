@@ -37,3 +37,4 @@ if __name__ == "__main__":
         with open('evaluateSlope.csv', 'a', newline='') as csvfile:
             output = csv.writer(csvfile)
             output.writerow((linkID, calSlope, surSlope, (str("{:.2f}".format(result*100))) + '%'))
+

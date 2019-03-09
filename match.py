@@ -64,7 +64,7 @@ if __name__ == "__main__":
     probeData = [line.split(',') for line in open('./Partition6467ProbePoints.csv')]
     linkData = [line.split(',') for line in open('./Partition6467LinkData.csv')]
     routeData = []
-    probeData = probeData[:100]
+    probeData = probeData[:10000]
     count =0
     # for i in range(len(probeData)):
     #     probeData[i].append(i)
@@ -79,7 +79,7 @@ if __name__ == "__main__":
             distance = projection(lat, lon, routeData[k][1], routeData[k][2],
                                   routeData[k][3], routeData[k][4])
             candidate.append((routeData[k][0], distance, routeData[k][1], routeData[k][2]))
-
+        print("progress: ", i ," /",len(probeData))
         matchMap = min(candidate, key=operator.itemgetter(1))
 
         with open('Partition6467MatchedPoints.csv', 'a', newline='') as csvfile:
