@@ -30,4 +30,4 @@ if __name__ == "__main__":
             output = csv.writer(csvfile)
             output.writerow((temp[0][8],comb))
         matchedProbeData = [k for k in matchedProbeData if matchedProbeData[0][8] not in k]
-        print(len(matchedProbeData))
+    print("Slope Calculate Done!")
