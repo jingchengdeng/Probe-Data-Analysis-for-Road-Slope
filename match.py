@@ -54,10 +54,16 @@ def projection(probelat, probelong, reflat, reflon, nreflat, nreflon):
 
     return calDistance(x, y, px, py)
 
+
 def getDirection(prob1, prob2, refpoint):
 
-    dis1 = calDistance(prob1[0], prob1[1], refpoint[0], refpoint[1])
-    dis2 = calDistance(prob2[0], prob2[1], refpoint[0], refpoint[1])
+    dis1 = calDistance(float(prob1[0]), float(prob1[1]), float(refpoint[0]), float(refpoint[1]))
+    dis2 = calDistance(float(prob2[0]), float(prob2[1]), float(refpoint[0]), float(refpoint[1]))
+
+    if dis1-dis2 < 0:
+        return True
+    else:
+        return False
 
 
 if __name__ == "__main__":
@@ -78,10 +84,12 @@ if __name__ == "__main__":
             lon = probeData[i][4]
             distance = projection(lat, lon, routeData[k][1], routeData[k][2],
                                   routeData[k][3], routeData[k][4])
-            candidate.append((routeData[k][0], distance))
+            candidate.append((routeData[k][0], distance, routeData[k][1], routeData[k][2]))
 
         matchMap = min(candidate, key=operator.itemgetter(1))
-        with open('Partition6467MatchedPoints.csv', 'w', newline='') as csvfile:
+        print(matchMap[2])
+        print(matchMap[3])
+        with open('Partition6467MatchedPoints.csv', 'a', newline='') as csvfile:
             output = csv.writer(csvfile)
             sampleID = probeData[i][0]
             dateTime = probeData[i][1]
@@ -91,7 +99,16 @@ if __name__ == "__main__":
             altitude = probeData[i][5]
             speed = probeData[i][6]
             heading = probeData[i][7]
-            linkPVID = matchMap[1]
-            direction = probe.direction
-            distFromRef = calHaversine(probe.coord, probe.refNode)
-            distFromLink = probe.matchedLink[0]
+            linkPVID = matchMap[0]
+            if getDirection((probeData[i][3],probeData[i][4]),(probeData[i-1][3],probeData[i-1][4]),
+                            (matchMap[2],matchMap[3])):
+                direction = 'T'
+            else:
+                direction = 'F'
+            distFromRef = calDistance(float(probeData[i][3]),
+                                      float(probeData[i][4]),
+                                      float(matchMap[2]),
+                                      float(matchMap[3]))
+            distFromLink = matchMap[1]
+            output.writerow((sampleID, dateTime, sourceCode, latitude, lontitude, altitude, speed, heading, linkPVID,
+                             direction, distFromRef, distFromLink))
